@@ -3,15 +3,20 @@ import eslint from '@eslint/js'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
+import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort'
 
 export default tseslint.config(
   {
     ignores: ['eslint.config.mjs'],
   },
+
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
   {
+    plugins: {
+      'simple-import-sort': eslintPluginSimpleImportSort,
+    },
     languageOptions: {
       globals: {
         ...globals.node,
@@ -29,6 +34,7 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
 )

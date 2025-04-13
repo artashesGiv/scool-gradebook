@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common'
-import { UsersModule } from './users/users.module'
+import { UsersModule } from '@/users/users.module'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { ConfigModule } from '@nestjs/config'
 import * as process from 'node:process'
-import { User } from './users/entities/user.entity'
+import { User } from '@/users/entities/user.entity'
+import { RolesModule } from '@/roles/roles.module'
+import { Role } from '@/roles/entities/role.entity'
+import { UserRoles } from '@/roles/entities/user-role.model'
 
 @Module({
   imports: [
@@ -19,8 +22,9 @@ import { User } from './users/entities/user.entity'
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       autoLoadModels: true,
-      models: [User],
+      models: [User, Role, UserRoles],
     }),
+    RolesModule,
   ],
 })
 export class AppModule {}

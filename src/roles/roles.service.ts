@@ -1,15 +1,25 @@
-import { Injectable } from '@nestjs/common'
-import { CreateRoleDto } from './dto/create-role.dto'
+import { Injectable, OnModuleInit } from '@nestjs/common'
 import { RoleEnum } from '@/common/enums/roles.enum'
 import { InjectModel } from '@nestjs/sequelize'
 import { Role } from './entities/role.entity'
 
 @Injectable()
-export class RolesService {
+export class RolesService implements OnModuleInit {
   constructor(@InjectModel(Role) private roleModel: typeof Role) {}
 
-  async create(createRoleDto: CreateRoleDto) {
-    return await this.roleModel.create(createRoleDto)
+  async onModuleInit() {
+    await this.seedRoles()
+  }
+
+  private async seedRoles() {
+    const roles = Object.values(RoleEnum)
+
+    for (const value of roles) {
+      await this.roleModel.findOrCreate({
+        where: { value },
+        defaults: { value, description: `${value} role` },
+      })
+    }
   }
 
   async getByValue(value: RoleEnum) {

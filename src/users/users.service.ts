@@ -24,16 +24,19 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.userModel.findAll({
+    return await this.userModel.findAll()
+  }
+
+  async findOne(id: number) {
+    return await this.userModel.findOne({
+      where: {
+        id,
+      },
       include: {
         model: Role,
         through: { attributes: [] }, // чтобы не возвращать промежуточную таблицу user_roles
       },
     })
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -19,12 +19,23 @@ export class UsersService {
     const role = await this.roleService.getByValue(RoleEnum.USER)
     if (role) {
       await user.$set('roles', [role.id])
+      await user.reload({
+        include: {
+          model: Role,
+          through: { attributes: [] },
+        },
+      })
     }
     return user
   }
 
   async findAll() {
-    return await this.userModel.findAll()
+    return await this.userModel.findAll({
+      include: {
+        model: Role,
+        through: { attributes: [] },
+      },
+    })
   }
 
   async findOne(id: number) {

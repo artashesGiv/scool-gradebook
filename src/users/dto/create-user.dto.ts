@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
+// TODO добавить проверку пароля
 export class CreateUserDto {
   @ApiProperty({ example: 'email@gmail.com' })
   email: string

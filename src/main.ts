@@ -1,7 +1,9 @@
-import { NestFactory } from '@nestjs/core'
+import { NestFactory, Reflector } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard'
+import { JwtService } from '@nestjs/jwt'
 
 const bootstrap = async () => {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -18,6 +20,10 @@ const bootstrap = async () => {
 
   app.set('query parser', 'extended')
   app.setGlobalPrefix('api')
+
+  const reflector = app.get(Reflector)
+  app.useGlobalGuards(new JwtAuthGuard(app.get(JwtService), reflector))
+
   await app.listen(port)
   console.log(`Server running on port ${port}`)
 }

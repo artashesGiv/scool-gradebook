@@ -3,3 +3,5 @@ export enum RoleEnum {
   USER = 'user',
   GUEST = 'moderator',
 }
+
+export type RoleType = `${RoleEnum}`

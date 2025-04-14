@@ -34,7 +34,17 @@ export class UsersService {
       },
       include: {
         model: Role,
-        through: { attributes: [] }, // чтобы не возвращать промежуточную таблицу user_roles
+        through: { attributes: [] },
+      },
+    })
+  }
+
+  async findByEmail(email: string) {
+    return await this.userModel.findOne({
+      where: { email },
+      include: {
+        model: Role,
+        through: { attributes: [] },
       },
     })
   }

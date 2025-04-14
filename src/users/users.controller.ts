@@ -14,7 +14,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { User } from './entities/user.entity'
 import { Roles } from '@/common/decorators/roles.decorator'
 import { RolesGuard } from '@/auth/roles.guard'
-import { AdminOrOwnerGuard } from '@/auth/admin-or-owner.guard'
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -32,7 +31,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Получить пользователя' })
   @ApiResponse({ status: 200, type: User })
-  @UseGuards(AdminOrOwnerGuard)
+  @UseGuards(RolesGuard)
   @Roles('admin')
   @Get(':id')
   findOne(

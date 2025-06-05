@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard'
 import { JwtService } from '@nestjs/jwt'
+import { ValidationPipe } from '@nestjs/common'
 
 const bootstrap = async () => {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -23,6 +24,13 @@ const bootstrap = async () => {
 
   const reflector = app.get(Reflector)
   app.useGlobalGuards(new JwtAuthGuard(app.get(JwtService), reflector))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // выбрасывать лишние поля
+      transform: true, // приводить типы
+      forbidNonWhitelisted: true,
+    }),
+  )
 
   await app.listen(port)
   console.log(`Server running on port ${port}`)

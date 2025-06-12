@@ -5,9 +5,21 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard'
 import { JwtService } from '@nestjs/jwt'
 import { ValidationPipe } from '@nestjs/common'
+import cookieParser from 'cookie-parser'
+import { DataWrapperInterceptor } from '@/common/interceptors/data-wrapper.interceptor'
 
 const bootstrap = async () => {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
+
+  app.use(cookieParser(process.env.SECRET || ''))
+
+  app.enableCors({
+    origin: ['http://localhost:5000'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization',
+    credentials: true,
+  })
+
   const port = process.env.PORT ?? 3000
 
   const config = new DocumentBuilder()
@@ -31,6 +43,7 @@ const bootstrap = async () => {
       forbidNonWhitelisted: true,
     }),
   )
+  app.useGlobalInterceptors(new DataWrapperInterceptor())
 
   await app.listen(port)
   console.log(`Server running on port ${port}`)

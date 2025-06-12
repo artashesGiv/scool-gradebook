@@ -13,8 +13,8 @@ interface UserCreationAttrs {
   email: string
   password: string
   name: string
-  middleName: string
-  lastName?: string
+  middleName?: string
+  lastName: string
 }
 
 @Table({ tableName: 'users' })
@@ -53,14 +53,14 @@ export class User extends Model<User, UserCreationAttrs> {
   @ApiProperty({ example: 'middle name' })
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   middleName: string
 
   @ApiProperty({ example: null })
   @Column({
     type: DataType.STRING,
-    allowNull: true,
+    allowNull: false,
   })
   lastName: string
 

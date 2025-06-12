@@ -14,7 +14,7 @@ export class UsersService {
     private roleService: RolesService,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: Omit<CreateUserDto, 'repeatPassword'>) {
     const user = await this.userModel.create(createUserDto)
     const role = await this.roleService.getByValue(RoleEnum.USER)
     if (role) {

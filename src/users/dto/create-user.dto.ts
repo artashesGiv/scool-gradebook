@@ -6,6 +6,7 @@ import {
   IsStrongPassword,
   MinLength,
 } from 'class-validator'
+import { Match } from '@/common/decorators/match.decorator'
 
 export class CreateUserDto {
   @ApiProperty({ example: 'email@gmail.com' })
@@ -19,18 +20,17 @@ export class CreateUserDto {
   )
   password: string
 
+  @ApiProperty({ example: '123qweASD' })
+  @Match('password', { message: 'Пароли не совпадают' })
+  repeatPassword: string
+
   @IsString()
   @MinLength(3)
   @ApiProperty({ example: 'name' })
   name: string
 
   @IsString()
-  @MinLength(3)
-  @ApiProperty({ example: 'middle name' })
-  middleName: string
-
-  @IsString()
   @IsOptional()
   @ApiProperty({ example: null })
-  lastName?: string
+  lastName: string
 }

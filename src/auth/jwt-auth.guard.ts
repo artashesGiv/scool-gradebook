@@ -10,29 +10,32 @@ import { PUBLIC_KEY } from '@/common/decorators/public.decorator'
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
+  private readonly tokenCookieName = 'access_token'
+
   constructor(
-    private jwtService: JwtService,
-    private reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
   ) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+    // Allow routes decorated with @Public() to bypass the guard
+    const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ])
+
+    if (isPublic) {
+      return true
+    }
+
+    const request = context.switchToHttp().getRequest()
+
     try {
-      const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_KEY, [
-        context.getHandler(),
-        context.getClass(),
-      ])
+      const token: string | undefined =
+        request.cookies?.[this.tokenCookieName] ||
+        request.signedCookies?.[this.tokenCookieName]
 
-      if (isPublic) {
-        return true
-      }
-
-      const request = context.switchToHttp().getRequest()
-
-      const authHeader: string = request.headers.authorization
-      const bearer = authHeader.split(' ')[0]
-      const token = authHeader.split(' ')[1]
-
-      if (bearer !== 'Bearer' || !token) {
+      if (!token) {
         throw new UnauthorizedException({
           message: 'Пользователь не авторизован',
         })
@@ -41,8 +44,7 @@ export class JwtAuthGuard implements CanActivate {
       request.user = this.jwtService.verify(token)
 
       return true
-    } catch (e) {
-      console.error(e)
+    } catch (_error) {
       throw new UnauthorizedException({
         message: 'Пользователь не авторизован',
       })

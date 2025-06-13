@@ -18,6 +18,8 @@ import { Request, Response } from 'express'
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
+  private readonly tokenCookieName = 'access_token'
+
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: 'Войти в систему' })
@@ -36,7 +38,7 @@ export class AuthController {
   ) {
     const { user, token } = await this.authService.login(loginDto)
 
-    res.cookie('access_token', token, {
+    res.cookie(this.tokenCookieName, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -49,15 +51,30 @@ export class AuthController {
   @ApiOperation({ summary: 'Зарегистрироваться' })
   @ApiResponse({
     status: 201,
-    schema: {
-      example: { token: 'token' },
-    },
   })
   @Public()
   @Post('/registration')
   @HttpCode(HttpStatus.CREATED)
   async registration(@Body() createUserDto: CreateUserDto) {
     await this.authService.registration(createUserDto)
+  }
+
+  @ApiOperation({ summary: 'Выйти из системы' })
+  @ApiResponse({
+    status: 200,
+  })
+  @Public()
+  @Get('/logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(this.tokenCookieName, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+    })
+
+    return { message: 'Вы успешно вышли из системы' }
   }
 
   @ApiOperation({ summary: 'Проверка связи с сервером' })
@@ -70,11 +87,11 @@ export class AuthController {
   @Public()
   @Get('/ping')
   ping(@Req() req: Request) {
-    const token = req.cookies?.access_token
+    const isAuth = this.authService.isAuth(req.cookies?.access_token)
 
     return {
       status: 'ok',
-      isAuth: Boolean(token),
+      isAuth,
     }
   }
 }

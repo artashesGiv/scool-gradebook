@@ -40,6 +40,9 @@ export class UsersService {
 
   async findOne(id: number) {
     return await this.userModel.findOne({
+      attributes: {
+        exclude: ['password'],
+      },
       where: {
         id,
       },

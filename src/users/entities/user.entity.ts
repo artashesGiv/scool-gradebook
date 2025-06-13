@@ -1,4 +1,10 @@
-import { BelongsToMany, Column, DataType, Model, Table, } from 'sequelize-typescript'
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  Model,
+  Table,
+} from 'sequelize-typescript'
 import { ApiProperty } from '@nestjs/swagger'
 import { Role } from '@/roles/entities/role.entity'
 import { UserRoles } from '@/roles/entities/user-role.model'

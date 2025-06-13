@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Req,
   UseGuards,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
@@ -14,6 +15,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { User } from './entities/user.entity'
 import { Roles } from '@/common/decorators/roles.decorator'
 import { RolesGuard } from '@/auth/roles.guard'
+import { Request } from 'express'
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -27,6 +29,13 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll()
+  }
+
+  @ApiOperation({ summary: 'Получить авторизованного пользователя' })
+  @ApiResponse({ status: 200, type: User })
+  @Get('/profile')
+  findOwner(@Req() req: Request) {
+    return this.usersService.findOne(+req.user!.id)
   }
 
   @ApiOperation({ summary: 'Получить пользователя' })

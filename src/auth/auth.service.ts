@@ -45,27 +45,9 @@ export class AuthService {
     return this.generateToken(user)
   }
 
-  isAuth(token: string) {
-    if (!token) {
-      return false
-    }
-
-    try {
-      this.jwtService.verify(token)
-
-      return true
-    } catch (_error) {
-      return false
-    }
-  }
-
   private generateToken(user: User) {
     const plainUser = user.get({ plain: true })
-    const payload = {
-      email: plainUser.email,
-      id: plainUser.id,
-      roles: plainUser.roles,
-    }
+    const { password: _, ...payload } = plainUser
 
     return this.jwtService.sign(payload)
   }

@@ -14,13 +14,17 @@ import { CreateUserDto } from '@/users/dto/create-user.dto'
 import { Public } from '@/common/decorators/public.decorator'
 import { LoginUserDto } from '@/auth/dto/login-user.dto'
 import { Request, Response } from 'express'
+import { JwtService } from '@nestjs/jwt'
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   private readonly tokenCookieName = 'access_token'
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @ApiOperation({ summary: 'Войти в систему' })
   @ApiResponse({
@@ -87,11 +91,11 @@ export class AuthController {
   @Public()
   @Get('/ping')
   ping(@Req() req: Request) {
-    const isAuth = this.authService.isAuth(req.cookies?.access_token)
+    const user = this.jwtService.verify(req.cookies?.['access_token'])
 
     return {
       status: 'ok',
-      isAuth,
+      user,
     }
   }
 }

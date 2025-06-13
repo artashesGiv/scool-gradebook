@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  IsStrongPassword,
-  MinLength,
-} from 'class-validator'
+import { IsEmail, IsString, IsStrongPassword, MinLength } from 'class-validator'
 import { Match } from '@/common/decorators/match.decorator'
 
 export class CreateUserDto {
@@ -26,11 +20,10 @@ export class CreateUserDto {
 
   @IsString()
   @MinLength(3)
-  @ApiProperty({ example: 'name' })
+  @ApiProperty({ example: 'Имя' })
   name: string
 
   @IsString()
-  @IsOptional()
-  @ApiProperty({ example: null })
+  @ApiProperty({ example: 'Фамилия' })
   lastName: string
 }

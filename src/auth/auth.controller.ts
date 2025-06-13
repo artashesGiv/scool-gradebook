@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '@/users/dto/create-user.dto'
@@ -20,6 +29,7 @@ export class AuthController {
   })
   @Public()
   @Post('/login')
+  @HttpCode(HttpStatus.OK)
   async login(
     @Body() loginDto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
@@ -38,15 +48,16 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Зарегистрироваться' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     schema: {
       example: { token: 'token' },
     },
   })
   @Public()
   @Post('/registration')
-  registration(@Body() createUserDto: CreateUserDto) {
-    return this.authService.registration(createUserDto)
+  @HttpCode(HttpStatus.CREATED)
+  async registration(@Body() createUserDto: CreateUserDto) {
+    await this.authService.registration(createUserDto)
   }
 
   @ApiOperation({ summary: 'Проверка связи с сервером' })

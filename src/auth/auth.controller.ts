@@ -15,6 +15,7 @@ import { Public } from '@/common/decorators/public.decorator'
 import { LoginUserDto } from '@/auth/dto/login-user.dto'
 import { Request, Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
+import { User } from '@/users/entities/user.entity'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -91,7 +92,12 @@ export class AuthController {
   @Public()
   @Get('/ping')
   ping(@Req() req: Request) {
-    const user = this.jwtService.verify(req.cookies?.['access_token'])
+    const token = req.cookies?.['access_token']
+    let user: User | null = null
+
+    if (token) {
+      user = this.jwtService.verify<User>(token)
+    }
 
     return {
       status: 'ok',

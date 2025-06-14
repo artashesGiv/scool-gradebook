@@ -1,13 +1,13 @@
 import {
-  BelongsToMany,
   Column,
   DataType,
+  Default,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript'
 import { ApiProperty } from '@nestjs/swagger'
-import { Role } from '@/roles/entities/role.entity'
-import { UserRoles } from '@/roles/entities/user-role.model'
+import { Membership } from '@/memberships/entities/membership.entity'
 
 interface UserCreationAttrs {
   email: string
@@ -19,14 +19,13 @@ interface UserCreationAttrs {
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, UserCreationAttrs> {
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: 'uuid' })
   @Column({
-    type: DataType.INTEGER,
-    unique: true,
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
     primaryKey: true,
-    autoIncrement: true,
   })
-  declare id: number
+  declare id: string
 
   @ApiProperty({ example: 'email@gmail.com' })
   @Column({
@@ -63,6 +62,17 @@ export class User extends Model<User, UserCreationAttrs> {
   })
   lastName: string
 
-  @BelongsToMany(() => Role, () => UserRoles)
-  roles: Role[]
+  @ApiProperty({ example: false })
+  @Default(false)
+  @Column
+  isSystemAdmin!: boolean
+
+  @ApiProperty({ example: '+79996277016' })
+  @Column({
+    type: DataType.STRING,
+    unique: true,
+  })
+  phone?: string
+
+  @HasMany(() => Membership) memberships: Membership[]
 }

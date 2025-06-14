@@ -1,19 +1,8 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Req,
-  UseGuards,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Req, UseGuards, } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { User } from './entities/user.entity'
-import { Roles } from '@/common/decorators/roles.decorator'
 import { RolesGuard } from '@/auth/roles.guard'
 import { Request } from 'express'
 
@@ -25,7 +14,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiResponse({ status: 200, type: [User] })
   @UseGuards(RolesGuard)
-  @Roles('admin')
+  // @Roles('head-teacher')
   @Get()
   findAll() {
     return this.usersService.findAll()
@@ -41,7 +30,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить пользователя' })
   @ApiResponse({ status: 200, type: User })
   @UseGuards(RolesGuard)
-  @Roles('admin')
+  // @Roles('admin')
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe)

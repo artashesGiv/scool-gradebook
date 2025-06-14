@@ -3,30 +3,14 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { InjectModel } from '@nestjs/sequelize'
-import { RolesService } from '@/roles/roles.service'
-import { RoleEnum } from '@/common/enums/roles.enum'
 import { Role } from '@/roles/entities/role.entity'
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User) private userModel: typeof User,
-    private roleService: RolesService,
-  ) {}
+  constructor(@InjectModel(User) private userModel: typeof User) {}
 
-  async create(createUserDto: Omit<CreateUserDto, 'repeatPassword'>) {
-    const user = await this.userModel.create(createUserDto)
-    const role = await this.roleService.getByValue(RoleEnum.USER)
-    if (role) {
-      await user.$set('roles', [role.id])
-      await user.reload({
-        include: {
-          model: Role,
-          through: { attributes: [] },
-        },
-      })
-    }
-    return user
+  create(createUserDto: Omit<CreateUserDto, 'repeatPassword'>) {
+    return this.userModel.create(createUserDto)
   }
 
   async findAll() {

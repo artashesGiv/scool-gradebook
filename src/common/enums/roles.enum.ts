@@ -1,7 +1,7 @@
 export enum RoleEnum {
-  ADMIN = 'admin',
-  USER = 'user',
-  GUEST = 'moderator',
+  HEAD_TEACHER = 'head-teacher',
+  TEACHER = 'teacher',
+  STUDENT = 'student',
 }
 
 export type RoleType = `${RoleEnum}`

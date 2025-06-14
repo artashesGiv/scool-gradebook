@@ -4,17 +4,16 @@ import { UsersController } from './users.controller'
 import { SequelizeModule } from '@nestjs/sequelize'
 import { User } from './entities/user.entity'
 import { Role } from '@/roles/entities/role.entity'
-import { UserRoles } from '@/roles/entities/user-role.model'
 import { RolesModule } from '@/roles/roles.module'
-import { AuthModule } from '@/auth/auth.module'
+import { MembershipsModule } from '@/memberships/memberships.module'
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User, Role, UserRoles]),
+    SequelizeModule.forFeature([User, Role]),
     RolesModule,
-    forwardRef(() => AuthModule),
+    forwardRef(() => MembershipsModule),
   ],
   exports: [UsersService],
 })

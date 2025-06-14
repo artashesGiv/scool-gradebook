@@ -6,8 +6,11 @@ import * as process from 'node:process'
 import { User } from '@/users/entities/user.entity'
 import { RolesModule } from '@/roles/roles.module'
 import { Role } from '@/roles/entities/role.entity'
-import { UserRoles } from '@/roles/entities/user-role.model'
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module'
+import { OrganizationModule } from './organization/organization.module'
+import { MembershipsModule } from './memberships/memberships.module'
+import { Membership } from '@/memberships/entities/membership.entity'
+import { Organization } from '@/organization/entities/organization.entity'
 
 @Module({
   imports: [
@@ -23,10 +26,13 @@ import { AuthModule } from './auth/auth.module';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       autoLoadModels: true,
-      models: [User, Role, UserRoles],
+      sync: { alter: true },
+      models: [User, Role, Membership, Organization],
     }),
     RolesModule,
     AuthModule,
+    OrganizationModule,
+    MembershipsModule,
   ],
 })
 export class AppModule {}

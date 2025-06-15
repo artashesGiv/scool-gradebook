@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Req, UseGuards, } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Req, UseGuards, } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -24,7 +24,7 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @Get('/profile')
   findOwner(@Req() req: Request) {
-    return this.usersService.findOne(+req.user!.id)
+    return this.usersService.findOne(req.user!.id)
   }
 
   @ApiOperation({ summary: 'Получить пользователя' })
@@ -33,22 +33,19 @@ export class UsersController {
   // @Roles('admin')
   @Get(':id')
   findOne(
-    @Param('id', ParseIntPipe)
+    @Param('id')
     id: string,
   ) {
-    return this.usersService.findOne(+id)
+    return this.usersService.findOne(id)
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.usersService.update(+id, updateUserDto)
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto)
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: string) {
-    return this.usersService.remove(+id)
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(id)
   }
 }

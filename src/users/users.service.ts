@@ -3,7 +3,6 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { InjectModel } from '@nestjs/sequelize'
-import { Role } from '@/roles/entities/role.entity'
 
 @Injectable()
 export class UsersService {
@@ -14,15 +13,10 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.userModel.findAll({
-      include: {
-        model: Role,
-        through: { attributes: [] },
-      },
-    })
+    return await this.userModel.findAll()
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return await this.userModel.findOne({
       attributes: {
         exclude: ['password'],
@@ -30,28 +24,20 @@ export class UsersService {
       where: {
         id,
       },
-      include: {
-        model: Role,
-        through: { attributes: [] },
-      },
     })
   }
 
   async findByEmail(email: string) {
     return await this.userModel.findOne({
       where: { email },
-      include: {
-        model: Role,
-        through: { attributes: [] },
-      },
     })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} user`
   }
 }

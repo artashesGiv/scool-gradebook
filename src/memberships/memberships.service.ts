@@ -1,28 +1,20 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable, NotFoundException, } from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Membership } from '@/memberships/entities/membership.entity'
 import { Role } from '@/roles/entities/role.entity'
 import { OrgRoleEnum, OrgRoleType } from '@/common/enums/roles.enum'
 import { CreateMembershipDto } from '@/memberships/dto/create-membership.dto'
+import { UsersService } from '@/users/users.service'
 
 @Injectable()
 export class MembershipsService {
   constructor(
     @InjectModel(Membership) private membershipModel: typeof Membership,
     @InjectModel(Role) private rolesModel: typeof Role,
+    private usersService: UsersService,
   ) {}
 
   async addUserToOrg(orgId: string, createMembershipDto: CreateMembershipDto) {
-    const role = await this.rolesModel.findOne({
-      where: { id: createMembershipDto.roleId },
-    })
-    if (!role) throw new NotFoundException('Role not found')
-
     const candidate = await this.membershipModel.findOne({
       where: { userId: createMembershipDto.userId, organizationId: orgId },
     })
@@ -31,6 +23,20 @@ export class MembershipsService {
       throw new HttpException(
         'Пользователь уже привязан к компании',
         HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    const role = await this.rolesModel.findOne({
+      where: { id: createMembershipDto.roleId },
+    })
+    if (!role) throw new NotFoundException('Role not found')
+
+    const user = await this.usersService.findOne(createMembershipDto.userId)
+
+    if (user.globalRole === 'admin') {
+      throw new HttpException(
+        'Администратор не может вступать в организации',
+        HttpStatus.FORBIDDEN,
       )
     }
 

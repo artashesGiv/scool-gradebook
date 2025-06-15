@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException, } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { UsersService } from '@/users/users.service'
 import { JwtService } from '@nestjs/jwt'
 import { CreateUserDto } from '@/users/dto/create-user.dto'

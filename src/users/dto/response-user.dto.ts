@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Membership } from '@/memberships/entities/membership.entity'
-import { GlobalRole } from '@/common/enums/roles.enum'
+import { GlobalRoleType } from '@/common/enums/roles.enum'
 
 export class ResponseUserDto {
   @ApiProperty({ example: 'uuid' })
@@ -22,8 +22,8 @@ export class ResponseUserDto {
   phone?: string
 
   @ApiProperty({ example: 'user' })
-  globalRole: GlobalRole
+  globalRole: GlobalRoleType
 
   @ApiProperty({ example: [] })
-  memberships: Membership[]
+  memberships?: Membership[]
 }

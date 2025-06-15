@@ -5,7 +5,7 @@ import { User } from './entities/user.entity'
 import { InjectModel } from '@nestjs/sequelize'
 import { Membership } from '@/memberships/entities/membership.entity'
 import { ResponseUserDto } from '@/users/dto/response-user.dto'
-import { GlobalRole } from '@/common/enums/roles.enum'
+import { GlobalRoleType } from '@/common/enums/roles.enum'
 
 @Injectable()
 export class UsersService {
@@ -78,7 +78,7 @@ export class UsersService {
   getUserToResponse(user: User): ResponseUserDto {
     const plainUser = user.get({ plain: true })
 
-    let role: GlobalRole = 'guest'
+    let role: GlobalRoleType = 'guest'
 
     if (plainUser.memberships?.length) {
       role = 'user'

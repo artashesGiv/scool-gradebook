@@ -15,6 +15,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { User } from './entities/user.entity'
 import { RolesGuard } from '@/auth/roles.guard'
 import { Request } from 'express'
+import { Roles } from '@/common/decorators/roles.decorator'
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -24,7 +25,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiResponse({ status: 200, type: [User] })
   @UseGuards(RolesGuard)
-  // @Roles('head-teacher')
+  @Roles('admin')
   @Get()
   findAll() {
     return this.usersService.findAll()
@@ -40,7 +41,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить пользователя' })
   @ApiResponse({ status: 200, type: User })
   @UseGuards(RolesGuard)
-  // @Roles('admin')
+  @Roles('admin')
   @Get(':id')
   findOne(
     @Param('id', new ParseUUIDPipe())
@@ -49,6 +50,8 @@ export class UsersController {
     return this.usersService.findOne(id)
   }
 
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @Patch(':id')
   update(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -57,6 +60,8 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto)
   }
 
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.usersService.remove(id)

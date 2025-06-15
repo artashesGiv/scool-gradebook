@@ -23,7 +23,7 @@ const bootstrap = async () => {
   const port = process.env.PORT ?? 3000
 
   const config = new DocumentBuilder()
-    .setTitle('Money')
+    .setTitle('school grade-book')
     .setDescription('')
     .setVersion('0.0.1')
     .build()

@@ -1,7 +1,13 @@
-export enum RoleEnum {
+export enum OrgRoleEnum {
   HEAD_TEACHER = 'head-teacher',
   TEACHER = 'teacher',
   STUDENT = 'student',
 }
 
-export type RoleType = `${RoleEnum}`
+export enum GlobalRoleEnum {
+  ADMIN = 'admin',
+  USER = 'user',
+  GUEST = 'guest',
+}
+
+export type OrgRoleType = `${OrgRoleEnum}`

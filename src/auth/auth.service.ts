@@ -21,6 +21,7 @@ export class AuthService {
   async login(loginDto: LoginUserDto) {
     const user = await this.validateUser(loginDto)
     const token = this.generateToken(user)
+
     return { user, token }
   }
 
@@ -37,12 +38,14 @@ export class AuthService {
 
     const { repeatPassword: _, ...data } = createUserDto
 
-    const user = await this.usersService.create({
+    const createUser = await this.usersService.create({
       ...data,
       password: hashPassword,
     })
 
-    return this.generateToken(user)
+    const user = await this.usersService.findOne(createUser.id)
+
+    return this.generateToken(user!)
   }
 
   private generateToken(user: User) {

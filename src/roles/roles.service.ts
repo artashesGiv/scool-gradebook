@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
-import { RoleEnum } from '@/common/enums/roles.enum'
+import { OrgRoleEnum } from '@/common/enums/roles.enum'
 import { InjectModel } from '@nestjs/sequelize'
 import { Role } from './entities/role.entity'
 
@@ -12,7 +12,7 @@ export class RolesService implements OnModuleInit {
   }
 
   private async seedRoles() {
-    const roles = Object.values(RoleEnum)
+    const roles = Object.values(OrgRoleEnum)
 
     for (const value of roles) {
       await this.roleModel.findOrCreate({
@@ -22,7 +22,7 @@ export class RolesService implements OnModuleInit {
     }
   }
 
-  async getByValue(value: RoleEnum) {
+  async getByValue(value: OrgRoleEnum) {
     return await this.roleModel.findOne({ where: { value: value as string } })
   }
 }

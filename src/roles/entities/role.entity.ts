@@ -1,10 +1,10 @@
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript'
 import { ApiProperty } from '@nestjs/swagger'
-import { RoleEnum } from '@/common/enums/roles.enum'
+import { OrgRoleEnum } from '@/common/enums/roles.enum'
 import { Membership } from '@/memberships/entities/membership.entity'
 
 interface RoleCreationAttrs {
-  value: RoleEnum
+  value: OrgRoleEnum
   description?: string
 }
 

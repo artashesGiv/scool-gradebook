@@ -35,7 +35,7 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @Get('/profile')
   findOwner(@Req() req: Request) {
-    return this.usersService.findOne(req.user!.id)
+    return this.usersService.findOne(req.user.id)
   }
 
   @ApiOperation({ summary: 'Получить пользователя' })

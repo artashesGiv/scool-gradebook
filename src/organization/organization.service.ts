@@ -1,17 +1,39 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, UseGuards } from '@nestjs/common'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { InjectModel } from '@nestjs/sequelize'
 import { Organization } from '@/organization/entities/organization.entity'
+import { ResponseUserDto } from '@/users/dto/response-user.dto'
+import { MembershipsService } from '@/memberships/memberships.service'
+import { GlobalRoleEnum, OrgRoleEnum } from '@/common/enums/roles.enum'
+import { RolesGuard } from '@/auth/roles.guard'
+import { Roles } from '@/common/decorators/roles.decorator'
 
 @Injectable()
 export class OrganizationService {
   constructor(
     @InjectModel(Organization) private organizationModel: typeof Organization,
+    private readonly membershipService: MembershipsService,
   ) {}
 
-  create(createOrganizationDto: CreateOrganizationDto) {
-    return this.organizationModel.create(createOrganizationDto)
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  async create(
+    createOrganizationDto: CreateOrganizationDto,
+    user: ResponseUserDto,
+  ) {
+    const organization = await this.organizationModel.create(
+      createOrganizationDto,
+    )
+
+    if (user.globalRole !== GlobalRoleEnum.ADMIN) {
+      await this.membershipService.addUserToOrg(organization.id, {
+        userId: user.id,
+        role: OrgRoleEnum.HEAD_TEACHER,
+      })
+    }
+
+    return organization
   }
 
   findAll() {

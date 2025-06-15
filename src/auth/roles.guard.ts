@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core'
 import { MembershipsService } from '@/memberships/memberships.service'
 import { ResponseUserDto } from '@/users/dto/response-user.dto'
 import { ROLES_KEY } from '@/common/decorators/roles.decorator'
+import { Request } from 'express'
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -19,7 +20,7 @@ export class RolesGuard implements CanActivate {
       return true
     }
 
-    const req = ctx.switchToHttp().getRequest()
+    const req: Request = ctx.switchToHttp().getRequest()
     const user: ResponseUserDto = req.user
 
     if (required.includes(user.globalRole) || user.globalRole === 'admin') {

@@ -7,12 +7,17 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common'
 import { OrganizationService } from './organization.service'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { MembershipsService } from '@/memberships/memberships.service'
 import { CreateMembershipDto } from '@/memberships/dto/create-membership.dto'
+import { RolesGuard } from '@/auth/roles.guard'
+import { Roles } from '@/common/decorators/roles.decorator'
+import { Request } from 'express'
 
 @Controller('organization')
 export class OrganizationController {
@@ -22,8 +27,11 @@ export class OrganizationController {
   ) {}
 
   @Post()
-  create(@Body() createOrganizationDto: CreateOrganizationDto) {
-    return this.organizationService.create(createOrganizationDto)
+  create(
+    @Body() createOrganizationDto: CreateOrganizationDto,
+    @Req() req: Request,
+  ) {
+    return this.organizationService.create(createOrganizationDto, req.user)
   }
 
   @Get()
@@ -36,9 +44,11 @@ export class OrganizationController {
     return this.organizationService.findOne(id)
   }
 
-  @Post(':id/add-user')
+  @UseGuards(RolesGuard)
+  @Roles('head-teacher')
+  @Post(':orgId/add-user')
   addUser(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('orgId', new ParseUUIDPipe()) id: string,
     @Body() createMembershipDto: CreateMembershipDto,
   ) {
     return this.membershipService.addUserToOrg(id, createMembershipDto)

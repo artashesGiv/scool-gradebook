@@ -21,13 +21,13 @@ export class MembershipsService {
 
     if (candidate) {
       throw new HttpException(
-        'Пользователь уже привязан к компании',
+        'Пользователь уже привязан к организации',
         HttpStatus.BAD_REQUEST,
       )
     }
 
     const role = await this.rolesModel.findOne({
-      where: { id: createMembershipDto.roleId },
+      where: { value: createMembershipDto.role },
     })
     if (!role) throw new NotFoundException('Role not found')
 
@@ -63,6 +63,8 @@ export class MembershipsService {
       include: [Role],
     })
 
-    return (membership?.role?.value ?? OrgRoleEnum.STUDENT) as OrgRoleEnum
+    const plainMembership = membership?.get({ plain: true })
+
+    return (plainMembership?.role?.value ?? OrgRoleEnum.STUDENT) as OrgRoleEnum
   }
 }

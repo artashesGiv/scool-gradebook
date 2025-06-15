@@ -26,4 +26,10 @@ export class ResponseUserDto {
 
   @ApiProperty({ example: [] })
   memberships?: Membership[]
+
+  @ApiProperty({ example: '2025-06-15T09:33:47.932Z' })
+  createdAt: Date
+
+  @ApiProperty({ example: '2025-06-15T09:33:47.932Z' })
+  updatedAt: Date
 }

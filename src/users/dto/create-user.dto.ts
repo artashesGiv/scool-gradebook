@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsEmail, IsString, IsStrongPassword, MinLength } from 'class-validator'
+import {
+  IsEmail,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  IsStrongPassword,
+  MinLength,
+} from 'class-validator'
 import { Match } from '@/common/decorators/match.decorator'
 
 export class CreateUserDto {
@@ -26,4 +33,16 @@ export class CreateUserDto {
   @IsString()
   @ApiProperty({ example: 'Фамилия' })
   lastName: string
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ example: 'Отчество' })
+  middleName?: string
+
+  @IsOptional()
+  @IsPhoneNumber('RU', {
+    message: 'Укажите корректный номер в формате +7XXXXXXXXXX',
+  })
+  @ApiProperty({ example: 'Телефон организации' })
+  phone?: string
 }

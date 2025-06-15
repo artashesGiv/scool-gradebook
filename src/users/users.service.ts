@@ -13,30 +13,30 @@ export class UsersService {
     return this.userModel.create(createUserDto)
   }
 
-  async findAll() {
-    return await this.userModel.findAll({
+  findAll() {
+    return this.userModel.findAll({
       attributes: {
         exclude: ['password'],
       },
       include: [
         {
           model: Membership,
-          attributes: ['id'],
+          // attributes: ['id'],
           required: false,
         },
       ],
     })
   }
 
-  async findOne(id: string) {
-    return await this.userModel.findOne({
+  findOne(id: string) {
+    return this.userModel.findOne({
       attributes: {
         exclude: ['password'],
       },
       include: [
         {
           model: Membership,
-          attributes: ['id'],
+          // attributes: ['id'],
           required: false,
         },
       ],
@@ -46,16 +46,9 @@ export class UsersService {
     })
   }
 
-  async findByEmail(email: string) {
-    return await this.userModel.findOne({
+  findByEmail(email: string) {
+    return this.userModel.findOne({
       where: { email },
-      include: [
-        {
-          model: Membership,
-          attributes: ['id'],
-          required: false,
-        },
-      ],
     })
   }
 

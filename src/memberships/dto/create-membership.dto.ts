@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsString } from 'class-validator'
+import { IsOptional, IsString } from 'class-validator'
 import { OrgRoleType } from '@/common/enums/roles.enum'
 
 export class CreateMembershipDto {
@@ -9,5 +9,10 @@ export class CreateMembershipDto {
 
   @IsString()
   @ApiProperty({ example: 'student' })
-  role?: OrgRoleType
+  role: OrgRoleType
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ example: 'Староста' })
+  post?: string
 }

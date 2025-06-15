@@ -30,6 +30,9 @@ export class RolesGuard implements CanActivate {
     const { orgId } = req.params
     if (!orgId) return false
     const roleCode = await this.memberships.getRoleCode(user.id, orgId)
+
+    if (!roleCode) return false
+
     return required.includes(roleCode)
   }
 }

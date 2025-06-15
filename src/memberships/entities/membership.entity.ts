@@ -39,6 +39,12 @@ export class Membership
   })
   declare id: number
 
+  @ApiProperty({ example: 1 })
+  @Column({
+    type: DataType.STRING,
+  })
+  post?: string
+
   @ForeignKey(() => User) @Column(DataType.UUID) userId: string
   @ForeignKey(() => Organization) @Column(DataType.UUID) organizationId: string
   @ForeignKey(() => Role) @Column(DataType.INTEGER) roleId!: number

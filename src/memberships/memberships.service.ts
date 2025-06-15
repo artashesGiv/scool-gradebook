@@ -57,7 +57,10 @@ export class MembershipsService {
     return membership
   }
 
-  async getRoleCode(userId: string, orgId: string): Promise<OrgRoleType> {
+  async getRoleCode(
+    userId: string,
+    orgId: string,
+  ): Promise<Maybe<OrgRoleType>> {
     const membership = await this.membershipModel.findOne({
       where: { userId, organizationId: orgId },
       include: [Role],
@@ -65,6 +68,6 @@ export class MembershipsService {
 
     const plainMembership = membership?.get({ plain: true })
 
-    return (plainMembership?.role?.value ?? OrgRoleEnum.STUDENT) as OrgRoleEnum
+    return plainMembership?.role?.value as OrgRoleEnum
   }
 }

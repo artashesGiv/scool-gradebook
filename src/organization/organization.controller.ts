@@ -39,8 +39,10 @@ export class OrganizationController {
     return this.organizationService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+  @UseGuards(RolesGuard)
+  @Roles('head-teacher', 'teacher', 'student')
+  @Get(':orgId')
+  findOne(@Param('orgId', new ParseUUIDPipe()) id: string) {
     return this.organizationService.findOne(id)
   }
 

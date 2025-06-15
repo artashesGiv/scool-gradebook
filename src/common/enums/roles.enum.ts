@@ -11,3 +11,4 @@ export enum GlobalRoleEnum {
 }
 
 export type OrgRoleType = `${OrgRoleEnum}`
+export type GlobalRole = `${GlobalRoleEnum}`

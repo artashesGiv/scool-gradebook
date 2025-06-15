@@ -65,7 +65,7 @@ export class User extends Model<User, UserCreationAttrs> {
   @ApiProperty({ example: false })
   @Default(false)
   @Column
-  isSystemAdmin!: boolean
+  isSystemAdmin: boolean
 
   @ApiProperty({ example: '+79996277016' })
   @Column({

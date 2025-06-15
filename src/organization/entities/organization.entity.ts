@@ -28,6 +28,12 @@ export class Organization extends Model<
   })
   name: string
 
+  @ApiProperty({ example: 'Волгоград' })
+  @Column({
+    type: DataType.STRING,
+  })
+  city?: string
+
   @ApiProperty({ example: 'email@gmail.com' })
   @Column({
     type: DataType.STRING,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { InjectModel } from '@nestjs/sequelize'
@@ -18,10 +18,14 @@ export class OrganizationService {
     return this.organizationModel.findAll()
   }
 
-  findOne(id: string) {
-    return this.organizationModel.findOne({
+  async findOne(id: string) {
+    const organization = await this.organizationModel.findOne({
       where: { id },
     })
+
+    if (!organization) throw new NotFoundException(`Организация не найдена`)
+
+    return organization
   }
 
   update(id: number, updateOrganizationDto: UpdateOrganizationDto) {

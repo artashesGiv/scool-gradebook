@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
@@ -21,22 +21,22 @@ export class UsersService {
       include: [
         {
           model: Membership,
-          // attributes: ['id'],
+          attributes: ['organizationId', 'roleId'],
           required: false,
         },
       ],
     })
   }
 
-  findOne(id: string) {
-    return this.userModel.findOne({
+  async findOne(id: string) {
+    const user = await this.userModel.findOne({
       attributes: {
         exclude: ['password'],
       },
       include: [
         {
           model: Membership,
-          // attributes: ['id'],
+          attributes: ['organizationId', 'roleId'],
           required: false,
         },
       ],
@@ -44,6 +44,10 @@ export class UsersService {
         id,
       },
     })
+
+    if (!user) throw new NotFoundException(`Пользователь не найден`)
+
+    return user
   }
 
   findByEmail(email: string) {

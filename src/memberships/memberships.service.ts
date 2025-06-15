@@ -1,8 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Membership } from '@/memberships/entities/membership.entity'
 import { Role } from '@/roles/entities/role.entity'
 import { OrgRoleEnum, OrgRoleType } from '@/common/enums/roles.enum'
+import { CreateMembershipDto } from '@/memberships/dto/create-membership.dto'
 
 @Injectable()
 export class MembershipsService {
@@ -11,16 +17,25 @@ export class MembershipsService {
     @InjectModel(Role) private rolesModel: typeof Role,
   ) {}
 
-  async addUserToOrg(
-    userId: string,
-    orgId: string,
-    roleValue: OrgRoleType = 'student',
-  ) {
-    const role = await this.rolesModel.findOne({ where: { value: roleValue } })
+  async addUserToOrg(orgId: string, createMembershipDto: CreateMembershipDto) {
+    const role = await this.rolesModel.findOne({
+      where: { id: createMembershipDto.roleId },
+    })
     if (!role) throw new NotFoundException('Role not found')
 
+    const candidate = await this.membershipModel.findOne({
+      where: { userId: createMembershipDto.userId, organizationId: orgId },
+    })
+
+    if (candidate) {
+      throw new HttpException(
+        'Пользователь уже привязан к компании',
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
     return this.membershipModel.create({
-      userId,
+      userId: createMembershipDto.userId,
       organizationId: orgId,
       roleId: role.id,
     })

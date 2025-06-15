@@ -22,7 +22,11 @@ export class RolesService implements OnModuleInit {
     }
   }
 
-  async getByValue(value: OrgRoleEnum) {
+  async findByValue(value: OrgRoleEnum) {
     return await this.roleModel.findOne({ where: { value: value as string } })
+  }
+
+  async findOne(id: number) {
+    return await this.roleModel.findOne({ where: { id } })
   }
 }

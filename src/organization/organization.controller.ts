@@ -12,6 +12,7 @@ import { OrganizationService } from './organization.service'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
 import { MembershipsService } from '@/memberships/memberships.service'
+import { CreateMembershipDto } from '@/memberships/dto/create-membership.dto'
 
 @Controller('organization')
 export class OrganizationController {
@@ -35,12 +36,12 @@ export class OrganizationController {
     return this.organizationService.findOne(id)
   }
 
-  @Get('/add-user/:id/:userId')
+  @Post(':id/add-user')
   addUser(
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Body() createMembershipDto: CreateMembershipDto,
   ) {
-    return this.membershipService.addUserToOrg(userId, id)
+    return this.membershipService.addUserToOrg(id, createMembershipDto)
   }
 
   @Patch(':id')

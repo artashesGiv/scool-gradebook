@@ -5,6 +5,8 @@ import { Role } from '@/roles/entities/role.entity'
 import { OrgRoleEnum, OrgRoleType } from '@/common/enums/roles.enum'
 import { CreateMembershipDto } from '@/memberships/dto/create-membership.dto'
 import { UsersService } from '@/users/users.service'
+import { User } from '@/users/entities/user.entity'
+import { Organization } from '@/organization/entities/organization.entity'
 
 @Injectable()
 export class MembershipsService {
@@ -14,7 +16,10 @@ export class MembershipsService {
     private usersService: UsersService,
   ) {}
 
-  async addUserToOrg(orgId: string, createMembershipDto: CreateMembershipDto) {
+  async addUserToOrg(
+    orgId: Organization['id'],
+    createMembershipDto: CreateMembershipDto,
+  ) {
     const candidate = await this.membershipModel.findOne({
       where: { userId: createMembershipDto.userId, organizationId: orgId },
     })
@@ -47,7 +52,28 @@ export class MembershipsService {
     })
   }
 
-  async changeRole(userId: string, orgId: string, roleValue: OrgRoleType) {
+  getAllMembershipsUser(userId: User['id']) {
+    return this.membershipModel.findAll({
+      where: { userId },
+      attributes: ['id'],
+      include: [
+        {
+          model: Role,
+          attributes: ['id', 'value'],
+        },
+        {
+          model: Organization,
+          attributes: ['id', 'name'],
+        },
+      ],
+    })
+  }
+
+  async changeRole(
+    userId: User['id'],
+    orgId: Organization['id'],
+    roleValue: OrgRoleType,
+  ) {
     const role = await this.rolesModel.findOne({ where: { value: roleValue } })
     const membership = await this.membershipModel.findOne({
       where: { userId, organizationId: orgId },

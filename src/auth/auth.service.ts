@@ -20,10 +20,9 @@ export class AuthService {
 
   async login(loginDto: LoginUserDto) {
     const user = await this.validateUser(loginDto)
-    const { memberships: _memberships, ...tokenUser } = user
-    const token = this.generateToken(tokenUser)
+    const token = this.generateToken(user)
 
-    return { user: tokenUser, token }
+    return { user, token }
   }
 
   async registration(createUserDto: CreateUserDto) {
@@ -44,10 +43,9 @@ export class AuthService {
       password: hashPassword,
     })
 
-    const { memberships: _memberships, ...tokenUser } =
-      this.usersService.getUserToResponse(createUser)
+    const user = this.usersService.getUserToResponse(createUser)
 
-    return this.generateToken(tokenUser)
+    return this.generateToken(user)
   }
 
   private generateToken(user: ResponseUserDto) {

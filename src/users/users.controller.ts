@@ -16,11 +16,16 @@ import { User } from './entities/user.entity'
 import { RolesGuard } from '@/auth/roles.guard'
 import { Request } from 'express'
 import { Roles } from '@/common/decorators/roles.decorator'
+import { Membership } from '@/memberships/entities/membership.entity'
+import { MembershipsService } from '@/memberships/memberships.service'
 
 @ApiTags('Пользователи')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly membershipService: MembershipsService,
+  ) {}
 
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiResponse({ status: 200, type: [User] })
@@ -45,7 +50,7 @@ export class UsersController {
   @Get(':id')
   findOne(
     @Param('id', new ParseUUIDPipe())
-    id: string,
+    id: User['id'],
   ) {
     return this.usersService.findOne(id)
   }
@@ -54,7 +59,7 @@ export class UsersController {
   @Roles('admin')
   @Patch(':id')
   update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('id', new ParseUUIDPipe()) id: User['id'],
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(id, updateUserDto)
@@ -63,7 +68,16 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles('admin')
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: User['id']) {
     return this.usersService.remove(id)
+  }
+
+  @ApiOperation({ summary: 'Получить организации одного пользователя' })
+  @ApiResponse({ status: 200, type: [Membership] })
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  @Get(':userId/organizations')
+  findOrganizations(@Param('userId', new ParseUUIDPipe()) userId: User['id']) {
+    return this.membershipService.getAllMembershipsUser(userId)
   }
 }

@@ -47,7 +47,7 @@ export class Organization extends Model<
   })
   phone?: string
 
-  @ApiProperty({ example: null })
+  @ApiProperty({ example: 'Описание организации' })
   @Column({
     type: DataType.STRING,
   })

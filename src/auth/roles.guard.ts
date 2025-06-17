@@ -23,12 +23,18 @@ export class RolesGuard implements CanActivate {
     const req: Request = ctx.switchToHttp().getRequest()
     const user: ResponseUserDto = req.user
 
+    const { orgId, userId } = req.params
+
+    if (userId && user.id === userId) {
+      return true
+    }
+
     if (required.includes(user.globalRole) || user.globalRole === 'admin') {
       return true
     }
 
-    const { orgId } = req.params
     if (!orgId) return false
+
     const roleCode = await this.memberships.getRoleCode(user.id, orgId)
 
     if (!roleCode) return false

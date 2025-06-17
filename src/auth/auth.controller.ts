@@ -9,13 +9,14 @@ import {
   Res,
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '@/users/dto/create-user.dto'
 import { Public } from '@/common/decorators/public.decorator'
 import { LoginUserDto } from '@/auth/dto/login-user.dto'
 import { Request, Response } from 'express'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@/users/entities/user.entity'
+import { ResponseUserDto } from '@/users/dto/response-user.dto'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -26,12 +27,12 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
   ) {}
-
+  @ApiBody({ type: LoginUserDto })
   @ApiOperation({ summary: 'Войти в систему' })
   @ApiResponse({
     status: 200,
     schema: {
-      example: { token: 'token' },
+      example: { user: ResponseUserDto, token: 'token' },
     },
   })
   @Public()
@@ -54,6 +55,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Зарегистрироваться' })
+  @ApiBody({ type: CreateUserDto })
   @ApiResponse({
     status: 201,
   })

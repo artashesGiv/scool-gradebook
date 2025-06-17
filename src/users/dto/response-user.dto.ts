@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Membership } from '@/memberships/entities/membership.entity'
 import { GlobalRoleType } from '@/common/enums/roles.enum'
 
 export class ResponseUserDto {
@@ -23,9 +22,6 @@ export class ResponseUserDto {
 
   @ApiProperty({ example: 'user' })
   globalRole: GlobalRoleType
-
-  @ApiProperty({ example: [] })
-  memberships?: Membership[]
 
   @ApiProperty({ example: '2025-06-15T09:33:47.932Z' })
   createdAt: Date

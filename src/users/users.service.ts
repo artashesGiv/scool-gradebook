@@ -3,11 +3,10 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 import { InjectModel } from '@nestjs/sequelize'
-import { Membership } from '@/memberships/entities/membership.entity'
 import { ResponseUserDto } from '@/users/dto/response-user.dto'
 import { GlobalRoleType } from '@/common/enums/roles.enum'
+import { Membership } from '@/memberships/entities/membership.entity'
 import { Role } from '@/roles/entities/role.entity'
-import { Organization } from '@/organization/entities/organization.entity'
 
 @Injectable()
 export class UsersService {
@@ -25,18 +24,8 @@ export class UsersService {
       include: [
         {
           model: Membership,
-          attributes: ['id'],
+          attributes: ['organizationId'],
           required: false,
-          include: [
-            {
-              model: Role,
-              attributes: ['id', 'value'],
-            },
-            {
-              model: Organization,
-              attributes: ['id', 'name'],
-            },
-          ],
         },
       ],
     })
@@ -52,18 +41,8 @@ export class UsersService {
       include: [
         {
           model: Membership,
-          attributes: ['id'],
+          attributes: ['organizationId'],
           required: false,
-          include: [
-            {
-              model: Role,
-              attributes: ['id', 'value'],
-            },
-            {
-              model: Organization,
-              attributes: ['id', 'name'],
-            },
-          ],
         },
       ],
       where: {
@@ -118,7 +97,6 @@ export class UsersService {
       lastName: plainUser.lastName,
       name: plainUser.name,
       phone: plainUser.phone,
-      memberships: plainUser.memberships,
       globalRole: role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

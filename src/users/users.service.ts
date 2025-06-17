@@ -33,7 +33,7 @@ export class UsersService {
     return users.map(user => this.getUserToResponse(user))
   }
 
-  async findOne(id: string): Promise<ResponseUserDto> {
+  async findOne(id: User['id']): Promise<ResponseUserDto> {
     const user = await this.userModel.findOne({
       attributes: {
         exclude: ['password'],
@@ -55,7 +55,7 @@ export class UsersService {
     return this.getUserToResponse(user)
   }
 
-  findByEmail(email: string) {
+  findByEmail(email: User['id']) {
     return this.userModel.findOne({
       where: { email },
       include: [
@@ -69,12 +69,23 @@ export class UsersService {
     })
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
+  async update(id: User['id'], updateUserDto: UpdateUserDto) {
+    const user = await this.userModel.findByPk(id)
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден')
+    }
+
+    const updatedUser = await user.update(updateUserDto)
+    return this.getUserToResponse(updatedUser)
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`
+  async remove(id: User['id']) {
+    const user = await this.userModel.findByPk(id)
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден')
+    }
+
+    await user.destroy()
   }
 
   getUserToResponse(user: User): ResponseUserDto {

@@ -1,13 +1,14 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Req, UseGuards, } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { User } from './entities/user.entity'
 import { RolesGuard } from '@/auth/roles.guard'
 import { Request } from 'express'
 import { Roles } from '@/common/decorators/roles.decorator'
 import { Membership } from '@/memberships/entities/membership.entity'
 import { MembershipsService } from '@/memberships/memberships.service'
+import { ResponseUserDto } from '@/users/dto/response-user.dto'
 
 @ApiTags('Пользователи')
 @Controller('users')
@@ -18,7 +19,7 @@ export class UsersController {
   ) {}
 
   @ApiOperation({ summary: 'Получить всех пользователей' })
-  @ApiResponse({ status: 200, type: [User] })
+  @ApiResponse({ status: 200, type: [ResponseUserDto] })
   @UseGuards(RolesGuard)
   @Roles('admin')
   @Get()
@@ -27,14 +28,14 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'Получить авторизованного пользователя' })
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200, type: ResponseUserDto })
   @Get('/profile')
   findOwner(@Req() req: Request) {
     return this.usersService.findOne(req.user.id)
   }
 
   @ApiOperation({ summary: 'Получить пользователя' })
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200, type: ResponseUserDto })
   @UseGuards(RolesGuard)
   @Roles('admin')
   @Get(':userId')
@@ -45,20 +46,25 @@ export class UsersController {
     return this.usersService.findOne(id)
   }
 
+  @ApiOperation({ summary: 'Редактировать пользователя' })
+  @ApiResponse({ status: 200, type: ResponseUserDto })
+  @ApiBody({ type: UpdateUserDto })
   @UseGuards(RolesGuard)
   @Roles('admin')
-  @Patch(':id')
+  @Patch(':userId')
   update(
-    @Param('id', new ParseUUIDPipe()) id: User['id'],
+    @Param('userId', new ParseUUIDPipe()) id: User['id'],
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(id, updateUserDto)
   }
 
+  @ApiOperation({ summary: 'Удалить пользователя' })
+  @ApiResponse({ status: 200 })
   @UseGuards(RolesGuard)
   @Roles('admin')
-  @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: User['id']) {
+  @Delete(':userId')
+  remove(@Param('userId', new ParseUUIDPipe()) id: User['id']) {
     return this.usersService.remove(id)
   }
 

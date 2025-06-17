@@ -50,11 +50,21 @@ export class OrganizationService {
     return organization
   }
 
-  update(id: number, updateOrganizationDto: UpdateOrganizationDto) {
-    return `This action updates a #${id} organization`
+  async update(id: number, updateOrganizationDto: UpdateOrganizationDto) {
+    const organization = await this.organizationModel.findByPk(id)
+    if (!organization) {
+      throw new NotFoundException('Организация не найдена')
+    }
+
+    return await organization.update(updateOrganizationDto)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} organization`
+  async remove(id: number) {
+    const organization = await this.organizationModel.findByPk(id)
+    if (!organization) {
+      throw new NotFoundException('Организация не найдена')
+    }
+
+    await organization.destroy()
   }
 }

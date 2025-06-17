@@ -74,6 +74,25 @@ export class MembershipsService {
     })
   }
 
+  getAllUsersOrganization(orgId: Organization['id']) {
+    return this.membershipModel.findAll({
+      where: { organizationId: orgId },
+      attributes: ['id'],
+      include: [
+        {
+          model: Role,
+          attributes: ['id', 'value'],
+        },
+        {
+          model: User,
+          attributes: {
+            exclude: ['password'],
+          },
+        },
+      ],
+    })
+  }
+
   async changeRole(
     userId: User['id'],
     orgId: Organization['id'],

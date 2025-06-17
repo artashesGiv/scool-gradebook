@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Req, UseGuards, } from '@nestjs/common'
 import { OrganizationService } from './organization.service'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { UpdateOrganizationDto } from './dto/update-organization.dto'
@@ -57,6 +46,26 @@ export class OrganizationController {
   }
 
   @ApiOperation({ summary: 'Добавить пользователя к организации' })
+  @ApiBody({ type: UpdateOrganizationDto })
+  @ApiResponse({ status: 200, type: Organization })
+  @UseGuards(RolesGuard)
+  @Roles('head-teacher')
+  @Patch(':orgId')
+  update(
+    @Param('orgId', new ParseUUIDPipe()) id: Organization['id'],
+    @Body() updateOrganizationDto: UpdateOrganizationDto,
+  ) {
+    return this.organizationService.update(+id, updateOrganizationDto)
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('head-teacher')
+  @Delete(':orgId')
+  remove(@Param('orgId', new ParseUUIDPipe()) id: Organization['id']) {
+    return this.organizationService.remove(+id)
+  }
+
+  @ApiOperation({ summary: 'Добавить пользователя к организации' })
   @ApiBody({ type: CreateMembershipDto })
   @ApiResponse({ status: 200, type: Membership })
   @UseGuards(RolesGuard)
@@ -69,19 +78,12 @@ export class OrganizationController {
     return this.membershipService.addUserToOrg(id, createMembershipDto)
   }
 
-  @ApiOperation({ summary: 'Добавить пользователя к организации' })
-  @ApiBody({ type: UpdateOrganizationDto })
-  @ApiResponse({ status: 200, type: Organization })
-  @Patch(':id')
-  update(
-    @Param('id', new ParseUUIDPipe()) id: Organization['id'],
-    @Body() updateOrganizationDto: UpdateOrganizationDto,
-  ) {
-    return this.organizationService.update(+id, updateOrganizationDto)
-  }
-
-  @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: Organization['id']) {
-    return this.organizationService.remove(+id)
+  @ApiOperation({ summary: 'Получить всех пользователей организации' })
+  @ApiResponse({ status: 200, type: Membership })
+  @UseGuards(RolesGuard)
+  @Roles('head-teacher')
+  @Get(':orgId/users')
+  findUsers(@Param('orgId', new ParseUUIDPipe()) id: Organization['id']) {
+    return this.membershipService.getAllUsersOrganization(id)
   }
 }

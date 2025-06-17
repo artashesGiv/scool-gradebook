@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Patch,
-  Req,
-  UseGuards,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Req, UseGuards, } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -47,9 +37,9 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @UseGuards(RolesGuard)
   @Roles('admin')
-  @Get(':id')
+  @Get(':userId')
   findOne(
-    @Param('id', new ParseUUIDPipe())
+    @Param('userId', new ParseUUIDPipe())
     id: User['id'],
   ) {
     return this.usersService.findOne(id)

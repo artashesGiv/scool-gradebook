@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException, } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/sequelize'
 import { Membership } from '@/memberships/entities/membership.entity'
 import { Role } from '@/roles/entities/role.entity'
